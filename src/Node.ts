@@ -1,5 +1,4 @@
 import P5, { Vector } from "p5";
-import { random } from "./Util";
 
 export class Node extends Vector {
   private vel: P5.Vector;
@@ -23,15 +22,24 @@ export class Node extends Vector {
   }
 
   public tick() {
-    this.vel.set(Vector.random2D()).mult(this.velocityScale);
+    // const x = this.p5.noise(this.x, this.y);
+    // const y = this.p5.noise(this.x, this.y);
+    const x = this.p5.map(Math.random(), 0, 1, -1, 1);
+    const y = this.p5.map(Math.random(), 0, 1, -1, 2);
+
+    this.vel.set(x, y).mult(this.velocityScale);
     if (!this.isFrozen) {
       this.add(this.vel);
     }
   }
 
   public draw() {
-    this.isFrozen ? this.p5.stroke("blue") : this.p5.stroke(255);
-    this.p5.noFill();
+    this.p5.strokeWeight(0.5);
+    this.p5.noStroke();
+    // this.isFrozen ? this.p5.stroke("red") : this.p5.stroke(100, 100, 100, 80);
+    this.isFrozen
+      ? this.p5.fill(255, 0, 0, 200)
+      : this.p5.fill(100, 100, 100, 80);
     this.p5.circle(this.x, this.y, this.diameter);
 
     //eye

@@ -5,9 +5,9 @@ import { Node, createRandomNodes } from "./Node";
 import { getSeed } from "./Seed";
 
 // simulation parameters
-const numberOfNodes = 500;
+const numberOfNodes = 1000;
 const nodeDiameter = 10;
-const energy = 10;
+const energy = 2;
 
 var sketch = (p: P5) => {
   let nodes: Node[];
@@ -18,15 +18,24 @@ var sketch = (p: P5) => {
 
     // Get a seed and add it to nodes
     nodes.push(
-      getSeed({
+      ...getSeed({
         p: p,
-        type: "point",
-        x: p.width / 2,
-        y: p.height / 2,
+        type: "line",
         diameter: nodeDiameter,
         energy: energy,
+        density: 1,
       })
     );
+    // nodes.push(
+    //   getSeed({
+    //     p: p,
+    //     type: "point",
+    //     x: p.width / 2,
+    //     y: p.height / 2,
+    //     diameter: nodeDiameter,
+    //     energy: energy,
+    //   })
+    // );
   };
 
   p.windowResized = () => {
