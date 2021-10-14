@@ -4,6 +4,7 @@ export class Node extends Vector {
   private vel: P5.Vector;
   private diameter: number;
   private velocityScale = 5;
+  private bounceEnergy = 5;
   private p5: P5;
   public isFrozen = false;
   public isSeed = false;
@@ -22,15 +23,29 @@ export class Node extends Vector {
   }
 
   public tick() {
+    // this.randomMotion();
+    if (!this.isFrozen) {
+      this.add(this.vel);
+    }
+    this.reflectOnBorders();
+  }
+  private reflectOnBorders() {
+    if (this.x >= this.p5.width || this.x <= 0) {
+      this.vel.set(this.vel.x * -1, this.vel.y);
+    }
+
+    if (this.y >= this.p5.height || this.y <= 0) {
+      this.vel.set(this.vel.x, this.vel.y * -1);
+    }
+  }
+
+  private randomMotion() {
     // const x = this.p5.noise(this.x, this.y);
     // const y = this.p5.noise(this.x, this.y);
     const x = this.p5.map(Math.random(), 0, 1, -1, 1);
     const y = this.p5.map(Math.random(), 0, 1, -1, 1);
 
     this.vel.set(x, y).mult(this.velocityScale);
-    if (!this.isFrozen) {
-      this.add(this.vel);
-    }
   }
 
   public draw() {
@@ -68,9 +83,13 @@ export class Node extends Vector {
   public bounce(other: Node) {
     // apply bounce to my vel
     const dir = Vector.sub(this, other).normalize();
-    const bounceVector = dir.mult(10);
-    // change vel to bouncevecotr or add it or something
-    this.velocityScale = 10;
+    const bounceVector = dir.mult(this.bounceEnergy);
+
+    // Infectious?
+    // this.velocityScale = 10;
+
+    // Vector replace
+    this.vel.set(bounceVector);
   }
 }
 

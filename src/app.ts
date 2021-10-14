@@ -5,9 +5,9 @@ import { Node, createRandomNodes } from "./Node";
 import { getSeed } from "./Seed";
 
 // simulation parameters
-const numberOfNodes = 100;
-const nodeDiameter = 25;
-const energy = 4;
+const numberOfNodes = 700;
+const nodeDiameter = 15;
+const energy = 2;
 
 // todo repulse
 // or todo bounce
@@ -22,12 +22,12 @@ var sketch = (p: P5) => {
     nodes.push(
       ...getSeed({
         p: p,
-        type: "point",
+        type: "line",
         diameter: nodeDiameter,
         energy: energy,
-        x: p.width / 2,
-        y: p.height / 2,
-        // density: 1,
+        // x: p.width / 2,
+        // y: p.height / 2,
+        density: 1,
       })
     );
     // nodes.push(
