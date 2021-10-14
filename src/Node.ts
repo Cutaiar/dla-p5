@@ -1,3 +1,4 @@
+import p5 from "p5";
 import P5, { Vector } from "p5";
 
 export class Node extends Vector {
@@ -8,6 +9,7 @@ export class Node extends Vector {
   private p5: P5;
   public isFrozen = false;
   public isSeed = false;
+  private attached: Node[] = [];
 
   constructor(p5: P5, diameter: number, energy: number, isSeed?: boolean) {
     super();
@@ -49,15 +51,8 @@ export class Node extends Vector {
   }
 
   public draw() {
-    //
-    const fillColor = this.p5.map(this.velocityScale, 0, 10, 0, 255);
-    this.p5.strokeWeight(0.5);
-    this.p5.noStroke();
-    // this.isFrozen ? this.p5.stroke("red") : this.p5.stroke(100, 100, 100, 80);
-    this.isFrozen
-      ? this.p5.fill(255, 0, 0, 200)
-      : this.p5.fill(fillColor, fillColor, fillColor, 70);
-    this.p5.circle(this.x, this.y, this.diameter);
+    this.drawDefault(true, false);
+    this.lineGrowthDrawStyle();
 
     //eye
     // const longVel = P5.Vector.mult(this.vel, this.diameter);
@@ -91,6 +86,46 @@ export class Node extends Vector {
     // Vector replace
     this.vel.set(bounceVector);
   }
+
+  /**
+   * Defines the action that should be taken when this node "freezes" against another.
+   *
+   * This relies on the node parent to facilitate detecting collision and calling `freeze`.
+   * @param other The node to freeze against
+   */
+  public freeze(other: Node) {
+    this.attached.push(other);
+    this.isFrozen = true;
+  }
+
+  // todo this and other draw calls could be optimized with push and pop
+  private drawDefault = (drawFreeNodes?: boolean, drawFrozen?: boolean) => {
+    const fillColor = this.p5.map(this.velocityScale, 0, 10, 0, 255);
+    this.p5.strokeWeight(0.5);
+    this.p5.noStroke();
+    // this.isFrozen ? this.p5.stroke("red") : this.p5.stroke(100, 100, 100, 80);
+    if (drawFrozen && this.isFrozen) {
+      this.p5.fill(255, 0, 0, 200);
+    } else if (drawFreeNodes && !this.isFrozen) {
+      this.p5.fill(fillColor, fillColor, fillColor, 70);
+    } else {
+      this.p5.noFill(); // hacky
+    }
+    this.p5.circle(this.x, this.y, this.diameter);
+  };
+
+  private lineGrowthDrawStyle = () => {
+    const fillColor = this.p5.map(
+      this.y,
+      this.p5.height,
+      this.p5.height - this.p5.height / 5,
+      0,
+      255
+    );
+    this.p5.strokeWeight(5);
+    this.p5.stroke(fillColor, fillColor, fillColor);
+    this.attached.forEach((a) => this.p5.line(this.x, this.y, a.x, a.y));
+  };
 }
 
 export const createRandomNodes = (

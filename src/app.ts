@@ -5,7 +5,7 @@ import { Node, createRandomNodes } from "./Node";
 import { getSeed } from "./Seed";
 
 // simulation parameters
-const numberOfNodes = 700;
+const numberOfNodes = 1000;
 const nodeDiameter = 15;
 const energy = 2;
 
@@ -50,19 +50,20 @@ var sketch = (p: P5) => {
     p.background(0);
 
     nodes.forEach((i) => {
-      // could optimize. This is the "freeze rule"
+      // could optimize. This is the "freeze rule" and "bounce rule"
       if (i.isSeed) {
+        // do nothing
       } else {
-        if (nodes.some((j) => i !== j && i.intersects(j) && j.isFrozen)) {
-          i.isFrozen = true;
-        } else {
-          nodes.forEach((j) => {
-            if (i !== j && i.intersects(j)) {
-              i.bounce(j);
-            }
-          });
-        }
+        nodes.forEach((j) => {
+          const isIntersecting = i !== j && i.intersects(j);
+          if (isIntersecting && j.isFrozen) {
+            i.freeze(j);
+          } else if (isIntersecting) {
+            i.bounce(j);
+          }
+        });
       }
+
       i.tick();
     });
 
