@@ -25,7 +25,7 @@ export class Node extends Vector {
     // const x = this.p5.noise(this.x, this.y);
     // const y = this.p5.noise(this.x, this.y);
     const x = this.p5.map(Math.random(), 0, 1, -1, 1);
-    const y = this.p5.map(Math.random(), 0, 1, -1, 2);
+    const y = this.p5.map(Math.random(), 0, 1, -1, 1);
 
     this.vel.set(x, y).mult(this.velocityScale);
     if (!this.isFrozen) {
@@ -34,12 +34,14 @@ export class Node extends Vector {
   }
 
   public draw() {
+    //
+    const fillColor = this.p5.map(this.velocityScale, 0, 10, 0, 255);
     this.p5.strokeWeight(0.5);
     this.p5.noStroke();
     // this.isFrozen ? this.p5.stroke("red") : this.p5.stroke(100, 100, 100, 80);
     this.isFrozen
       ? this.p5.fill(255, 0, 0, 200)
-      : this.p5.fill(100, 100, 100, 80);
+      : this.p5.fill(fillColor, fillColor, fillColor, 70);
     this.p5.circle(this.x, this.y, this.diameter);
 
     //eye
@@ -52,6 +54,23 @@ export class Node extends Vector {
     if (this.dist(other) < this.diameter / 2 + other.diameter / 2) {
       return true;
     }
+  }
+
+  /**
+   * Defines the action that should be taken when this node "bounces" on another.
+   *
+   * //TODO bounce should support an explicit list of bevaviors which can be interchanged using a paramter.
+   *  // then simulations could be made with patches of different collsison action slected when calling bounce
+   *
+   * This relies on the node parent to facilitate detecting collision and calling `bounce`.
+   * @param other The node to bounce off of
+   */
+  public bounce(other: Node) {
+    // apply bounce to my vel
+    const dir = Vector.sub(this, other).normalize();
+    const bounceVector = dir.mult(10);
+    // change vel to bouncevecotr or add it or something
+    this.velocityScale = 10;
   }
 }
 

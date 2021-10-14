@@ -5,10 +5,12 @@ import { Node, createRandomNodes } from "./Node";
 import { getSeed } from "./Seed";
 
 // simulation parameters
-const numberOfNodes = 1000;
-const nodeDiameter = 10;
-const energy = 2;
+const numberOfNodes = 100;
+const nodeDiameter = 25;
+const energy = 4;
 
+// todo repulse
+// or todo bounce
 var sketch = (p: P5) => {
   let nodes: Node[];
 
@@ -20,10 +22,12 @@ var sketch = (p: P5) => {
     nodes.push(
       ...getSeed({
         p: p,
-        type: "line",
+        type: "point",
         diameter: nodeDiameter,
         energy: energy,
-        density: 1,
+        x: p.width / 2,
+        y: p.height / 2,
+        // density: 1,
       })
     );
     // nodes.push(
@@ -51,6 +55,12 @@ var sketch = (p: P5) => {
       } else {
         if (nodes.some((j) => i !== j && i.intersects(j) && j.isFrozen)) {
           i.isFrozen = true;
+        } else {
+          nodes.forEach((j) => {
+            if (i !== j && i.intersects(j)) {
+              i.bounce(j);
+            }
+          });
         }
       }
       i.tick();
