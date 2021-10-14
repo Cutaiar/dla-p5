@@ -22,12 +22,12 @@ var sketch = (p: P5) => {
     nodes.push(
       ...getSeed({
         p: p,
-        type: "line",
+        type: "point",
         diameter: nodeDiameter,
         energy: energy,
-        // x: p.width / 2,
-        // y: p.height / 2,
-        density: 1,
+        x: p.width / 2,
+        y: p.height / 2,
+        // density: 1,
       })
     );
     // nodes.push(

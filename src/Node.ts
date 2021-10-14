@@ -25,12 +25,15 @@ export class Node extends Vector {
   }
 
   public tick() {
+    // todo could add minor random motion in between collisions
     // this.randomMotion();
     if (!this.isFrozen) {
       this.add(this.vel);
     }
     this.reflectOnBorders();
+    // todo the nodes could respect a swaying wind force when frozen to add visual interest and dynamics to the growth.
   }
+
   private reflectOnBorders() {
     if (this.x >= this.p5.width || this.x <= 0) {
       this.vel.set(this.vel.x * -1, this.vel.y);
@@ -51,7 +54,7 @@ export class Node extends Vector {
   }
 
   public draw() {
-    this.drawDefault(true, false);
+    // this.drawDefault(true, false);
     this.lineGrowthDrawStyle();
 
     //eye
@@ -115,12 +118,23 @@ export class Node extends Vector {
   };
 
   private lineGrowthDrawStyle = () => {
+    // todo abstract linGrowth into center and vertical type sto match seed
+    // const fillColor = this.p5.map(
+    //   this.y,
+    //   this.p5.height,
+    //   this.p5.height - this.p5.height / 5,
+    //   0,
+    //   255
+    // );
     const fillColor = this.p5.map(
-      this.y,
-      this.p5.height,
-      this.p5.height - this.p5.height / 5,
+      Vector.dist(
+        this,
+        this.p5.createVector(this.p5.width / 2, this.p5.height / 2)
+      ),
       0,
-      255
+      Math.min(this.p5.width, this.p5.height) / 2,
+      255,
+      0
     );
     this.p5.strokeWeight(5);
     this.p5.stroke(fillColor, fillColor, fillColor);
