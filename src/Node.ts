@@ -55,8 +55,8 @@ export class Node extends Vector {
   }
 
   public draw() {
-    // this.drawDefault(true, false);
-    this.lineGrowthDrawStyle(true);
+    this.drawNodes(true, false);
+    this.drawLines(true);
 
     //eye
     // const longVel = P5.Vector.mult(this.vel, this.diameter);
@@ -103,7 +103,7 @@ export class Node extends Vector {
   }
 
   // todo this and other draw calls could be optimized with push and pop
-  private drawDefault = (drawFreeNodes?: boolean, drawFrozen?: boolean) => {
+  private drawNodes = (drawFreeNodes?: boolean, drawFrozen?: boolean) => {
     const fillColor = this.p5.map(this.velocityScale, 0, 10, 0, 255);
     this.p5.strokeWeight(0.5);
     this.p5.noStroke();
@@ -118,7 +118,7 @@ export class Node extends Vector {
     this.p5.circle(this.x, this.y, this.diameter);
   };
 
-  private lineGrowthDrawStyle = (taper?: boolean) => {
+  private drawLines = (taper?: boolean) => {
     // todo abstract linGrowth into center and vertical type sto match seed
     // const fillColor = this.p5.map(
     //   this.y,
