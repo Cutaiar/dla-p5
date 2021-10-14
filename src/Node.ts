@@ -1,5 +1,6 @@
 import p5 from "p5";
 import P5, { Vector } from "p5";
+import { center } from "./Util";
 
 export class Node extends Vector {
   private vel: P5.Vector;
@@ -55,7 +56,7 @@ export class Node extends Vector {
 
   public draw() {
     // this.drawDefault(true, false);
-    this.lineGrowthDrawStyle();
+    this.lineGrowthDrawStyle(true);
 
     //eye
     // const longVel = P5.Vector.mult(this.vel, this.diameter);
@@ -117,7 +118,7 @@ export class Node extends Vector {
     this.p5.circle(this.x, this.y, this.diameter);
   };
 
-  private lineGrowthDrawStyle = () => {
+  private lineGrowthDrawStyle = (taper?: boolean) => {
     // todo abstract linGrowth into center and vertical type sto match seed
     // const fillColor = this.p5.map(
     //   this.y,
@@ -136,7 +137,19 @@ export class Node extends Vector {
       255,
       0
     );
-    this.p5.strokeWeight(5);
+    const spread = Math.min(this.p5.width, this.p5.height) / 3;
+    const defaultStrokeWeight = 4;
+    const strokeWeightRaw = Vector.dist(this, center(this.p5));
+    const strokeWeightMin = 0.5;
+    const strokeWeightMax = 10;
+    const strokeWeight = this.p5.map(
+      strokeWeightRaw,
+      0,
+      spread,
+      strokeWeightMax,
+      strokeWeightMin
+    );
+    this.p5.strokeWeight(taper ? strokeWeight : defaultStrokeWeight);
     this.p5.stroke(fillColor, fillColor, fillColor);
     this.attached.forEach((a) => this.p5.line(this.x, this.y, a.x, a.y));
   };
