@@ -55,8 +55,8 @@ export class Node extends Vector {
   }
 
   public draw() {
-    this.drawNodes(true, false);
-    this.drawLines(true);
+    this.drawNodes(true, true);
+    // this.drawLines(true);
 
     //eye
     // const longVel = P5.Vector.mult(this.vel, this.diameter);
@@ -65,7 +65,10 @@ export class Node extends Vector {
   }
 
   public intersects(other: Node) {
-    if (this.dist(other) < this.diameter / 2 + other.diameter / 2) {
+    const dx = other.x - this.x;
+    const dy = other.y - this.y;
+    const dsq = dx * dx + dy * dy;
+    if (dsq < (this.diameter / 2) * (other.diameter / 2) * 4) {
       return true;
     }
   }
